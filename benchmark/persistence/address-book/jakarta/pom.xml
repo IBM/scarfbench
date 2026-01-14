@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- Project coordinates -->
+  <groupId>jakarta.examples.tutorial.persistence</groupId>
+  <artifactId>address-book</artifactId>
+  <version>10-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <name>Jakarta EE Address Book Example</name>
+
+  <properties>
+    <!-- Java & enc -->
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- Versions -->
+    <jakarta.ee.version>10.0.0</jakarta.ee.version>
+    <tomee.version>10.1.1</tomee.version>
+    <eclipselink.version>4.0.7</eclipselink.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- BOM for consistent Jakarta EE API versions -->
+      <dependency>
+        <groupId>jakarta.platform</groupId>
+        <artifactId>jakarta.jakartaee-bom</artifactId>
+        <version>${jakarta.ee.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- Jakarta EE 10 Web Profile APIs (provided by the server) -->
+    <dependency>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-web-api</artifactId>
+      <version>${jakarta.ee.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- EclipseLink JPA provider (packaged in the WAR so TomEE can find it) -->
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.jpa</artifactId>
+      <version>${eclipselink.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Enforce Java 17 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.4.1</version>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals><goal>enforce</goal></goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>[17,)</version>
+                </requireJavaVersion>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Compiler -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+        <configuration>
+          <source>17</source>
+          <target>17</target>
+        </configuration>
+      </plugin>
+
+      <!-- TomEE Maven Plugin (dev-runner) -->
+      <plugin>
+        <groupId>org.apache.tomee.maven</groupId>
+        <artifactId>tomee-maven-plugin</artifactId>
+        <version>${tomee.version}</version>
+        <configuration>
+          <!-- Use TomEE 10.1.1, Plus flavor (includes more specs) -->
+          <tomeeVersion>${tomee.version}</tomeeVersion>
+          <tomeeClassifier>plus</tomeeClassifier>
+          <!-- Avoid local port conflict from your logs -->
+          <tomeeShutdownPort>18005</tomeeShutdownPort>
+
+          <!-- Optional: add container libs (not needed since we bundle EclipseLink in WAR)
+               <libs>
+                 <lib>org.eclipse.persistence:org.eclipse.persistence.jpa:${eclipselink.version}</lib>
+               </libs>
+          -->
+        </configuration>
+      </plugin>
+
+      <!-- WAR packaging -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.4.0</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

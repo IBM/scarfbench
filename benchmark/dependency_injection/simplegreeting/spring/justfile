@@ -1,0 +1,118 @@
+# Run `just` to see available recipes
+
+# Set shell
+set shell := ["bash", "-c"]
+
+# Default recipe - shows available commands
+default:
+    @just --list
+
+# Build the JAR file using Maven
+build:
+    @echo "Building the simplegreeting JAR file..."
+    ./mvnw clean package
+
+# Clean build artifacts
+clean:
+    @echo "Cleaning build artifacts..."
+    ./mvnw clean
+
+# Compile without packaging
+compile:
+    @echo "Compiling Java sources..."
+    ./mvnw compile
+
+# Run tests
+test:
+    @echo "Running tests..."
+    ./mvnw test
+
+# Build Docker image
+docker-build: build
+    @echo "Building Docker image..."
+    docker build -t simplegreeting-spring:latest .
+
+# Start application with Docker Compose
+up:
+    @echo "Starting application with Docker Compose..."
+    docker-compose up -d
+
+# Stop Docker Compose services
+down:
+    @echo "Stopping Docker Compose services..."
+    docker-compose down
+
+# View Docker Compose logs
+logs:
+    @echo "Viewing application logs..."
+    docker-compose logs -f
+
+# Restart Docker Compose services
+restart:
+    @echo "Restarting services..."
+    docker-compose restart
+
+# Build and deploy (build + docker-build + up)
+deploy: build docker-build up
+    @echo "Application deployed successfully!"
+    @echo ""
+    @echo "Access the application at: http://localhost:8080/simplegreeting/"
+
+# Show application status
+status:
+    @echo "Docker Compose services status:"
+    docker-compose ps
+    @echo ""
+    @echo "Docker images:"
+    docker images | grep simplegreeting
+
+# View application in browser (requires xdg-open)
+open:
+    @echo "Opening application in browser..."
+    xdg-open http://localhost:8080/simplegreeting/ || echo "Please open http://localhost:8080/simplegreeting/ manually"
+
+# Complete dedeployment - stops containers, removes images, and frees all resources
+dedeploy:
+    @echo "dedeploying application..."
+    @echo "Stopping all containers..."
+    docker-compose down -v || echo "No containers to stop"
+    @echo "Removing Docker image..."
+    docker rmi simplegreeting-spring:latest || echo "Image not found"
+    @echo "Removing stopped containers and freeing ports..."
+    docker container prune -f
+    @echo "Cleaning up networks..."
+    docker network prune -f
+    @echo "dedeployment complete - all ports released!"
+
+# Clean Docker resources
+docker-clean:
+    @echo "Cleaning Docker resources..."
+    docker-compose down --rmi local --volumes --remove-orphans
+    docker rmi simplegreeting-spring:latest || echo "Image not found"
+    docker system prune -f
+
+# Development workflow - use the spring boot plugin
+dev:
+    ./mvnw spring-boot:run
+
+# Check if Docker is running
+check-docker:
+    @echo "Checking Docker status..."
+    docker --version
+    docker-compose --version
+    docker ps
+
+# Follow application logs in real-time
+tail-logs:
+    @echo "Following application logs (Ctrl+C to stop)..."
+    docker-compose logs -f simplegreeting-spring
+
+# Execute bash shell in running container
+shell:
+    @echo "Opening shell in running container..."
+    docker-compose exec simplegreeting-spring bash
+
+# Execute smoke test in running container
+smoke-test:
+    @echo "Executing smoke test in running container..."
+    docker-compose exec simplegreeting-spring bash -c 'python3 /opt/smoke-test/smoke.py'

@@ -1,0 +1,59 @@
+# Bill Payment Spring Boot Application Justfile
+
+# Default recipe
+default:
+    @just --list
+
+# Clean and compile the application
+build:
+    mvn clean compile
+
+# Run the application
+run:
+    mvn spring-boot:run
+
+# Package the application
+package:
+    mvn clean package
+
+# Run tests
+test:
+    mvn test
+
+# Clean build artifacts
+clean:
+    mvn clean
+
+# Build Docker image
+docker-build:
+    mvn clean package
+    docker build -t billpayment-spring .
+
+# Run with Docker Compose
+docker-run: docker-build
+    docker-compose up -d
+
+# Stop Docker containers
+docker-stop:
+    docker-compose down
+
+# Clean Docker resources
+docker-clean:
+    @echo "Cleaning Docker resources..."
+    docker-compose down -v
+    docker rmi billpayment-spring:latest || echo "Image not found"
+    docker rmi billpayment-billpayment-spring:latest || echo "Image not found"
+    docker system prune -f
+
+# Show application logs
+logs:
+    docker-compose logs -f billpayment-spring
+
+# Development mode with auto-reload
+dev:
+    mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Dspring.profiles.active=dev"
+
+# Execute smoke test in running container
+smoke-test:
+    @echo "Executing smoke test in running container..."
+    docker-compose exec billpayment-spring bash -c 'python3 /opt/smoke-test/smoke.py'

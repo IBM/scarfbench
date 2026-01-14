@@ -1,0 +1,89 @@
+# Jakarta EE EJB Interceptor Project Justfile
+# Run `just` to see available recipes
+
+# Set shell
+set shell := ["bash", "-c"]
+
+# Default recipe - shows available commands
+default:
+    @just --list
+
+# Build the WAR file using Maven
+build:
+    @echo "Building the ejb-interceptor WAR file..."
+    ./mvnw clean package
+
+# Clean build artifacts
+clean:
+    @echo "Cleaning build artifacts..."
+    ./mvnw clean
+
+# Compile without packaging
+compile:
+    @echo "Compiling Java sources..."
+    ./mvnw compile
+
+# Run tests
+test:
+    @echo "Running tests..."
+    ./mvnw test
+
+# Build Docker image
+docker-build:
+    @echo "Building Docker image..."
+    just build
+    docker build -t ejb-interceptor-glassfish7:latest .
+
+# Start application with Docker-Compose
+up:
+    @echo "Starting application with Docker-Compose..."
+    docker-compose up -d
+
+# Build and deploy (docker-build + up)
+deploy: docker-build up
+    @echo "Application deployed successfully!"
+    @echo ""
+    @echo "Access the application at: http://localhost:10084/interceptor-10-SNAPSHOT/"
+    @echo "Access GlassFish admin console at: http://localhost:10151/"
+    
+
+# Stop Docker-Compose services
+down:
+    @echo "Stopping Docker-Compose services..."
+    docker-compose down
+
+# View Docker-Compose logs
+logs:
+    @echo "Viewing application logs..."
+    docker-compose logs -f
+
+# Show application info
+info:
+    @echo "EJB Interceptor Application Information:"
+    @echo "========================================"
+    @echo "Build: ./mvnw clean package"
+    @echo "Docker: docker build -t ejb-interceptor-glassfish7:latest ."
+    @echo "Run: docker-compose up -d"
+    @echo "Application URL: http://localhost:10084/interceptor-10-SNAPSHOT/"
+    @echo "Admin Console: http://localhost:10151/"
+
+# Restart application (down + up)
+restart:
+    @echo "Restarting application..."
+    just down
+    just up
+
+# View container status
+status:
+    @echo "Checking application status..."
+    docker-compose ps
+
+# Build and run in one command
+run: docker-build up
+
+# Clean everything (artifacts + Docker)
+clean-all:
+    @echo "Cleaning all artifacts and Docker resources..."
+    just clean
+    docker-compose down -v
+    docker image rm ejb-interceptor-glassfish7:latest 2>/dev/null || true
