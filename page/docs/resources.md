@@ -1,0 +1,4 @@
+# Resources
+
+[Placeholder: Resources content]
+
