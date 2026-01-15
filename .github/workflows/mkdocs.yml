@@ -5,7 +5,7 @@ on:
     branches: [ main ]
     paths:
       - "site/**"
-      - ".github/workflows/docs.yml"
+      - ".github/workflows/mkdocs.yml"
 
 permissions:
   contents: write
@@ -33,6 +33,7 @@ jobs:
         working-directory: site
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MKDOCS_SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

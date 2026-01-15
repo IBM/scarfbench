@@ -1,5 +1,6 @@
 site_name: ScarfBench
 site_description: A Benchmark of Self-Contained Application Refactoring and Framework Migration Examples
+site_url: !ENV [MKDOCS_SITE_URL, "https://ibm.github.io/scarfbench/"]
 repo_url: https://github.com/ibm/scarfbench
 repo_name: ScarfBench
 strict: false

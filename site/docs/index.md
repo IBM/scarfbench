@@ -41,7 +41,7 @@ Get started with using Scarf benchmark:
 
     Run through an example to quickly set up CLDK and perform multilingual code analysis.
 
-- [:cldk-results-16: Leaderboard](leaderboard.md)
+- [:cldk-results-16: Leaderboard](leaderboard/index.html)
 
     ---
 
