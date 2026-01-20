@@ -5,18 +5,19 @@
         <feature>jakartaee-10.0</feature>
     </featureManager>
 
-    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="8080" httpsPort="8443" />
+    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="9080" httpsPort="9443" />
 
-    <!-- Map the app's persistence.xml jta-data-source (java:comp/DefaultDataSource) -->
-    <library id="derbyLib">
-        <fileset dir="${server.config.dir}/lib" includes="derby*.jar" />
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="admin" password="admin" />
+    </basicRegistry>
+
+    <library id="h2Library">
+        <fileset dir="${shared.resource.dir}" includes="h2*.jar"/>
     </library>
 
-    <dataSource id="DefaultDataSource" jndiName="java:comp/DefaultDataSource">
-        <jdbcDriver libraryRef="derbyLib" />
-        <properties.derby.embedded
-            databaseName="addressbook"
-            createDatabase="create" />
+    <dataSource id="DefaultDataSource" jndiName="jdbc/DefaultDataSource">
+        <jdbcDriver libraryRef="h2Library" javax.sql.DataSource="org.h2.jdbcx.JdbcDataSource" />
+        <properties url="jdbc:h2:mem:addressbook" />
     </dataSource>
 
 </server>

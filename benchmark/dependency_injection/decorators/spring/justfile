@@ -22,11 +22,6 @@ compile:
     @echo "Compiling Java sources..."
     ./mvnw compile
 
-# Run tests
-test:
-    @echo "Running tests..."
-    ./mvnw test
-
 # Build Docker image
 docker-build: build
     @echo "Building Docker image..."
@@ -113,6 +108,8 @@ shell:
     docker-compose exec decorators-spring bash
 
 # Execute smoke test in running container
-smoke-test:
+smoke:
     @echo "Executing smoke test in running container..."
     docker-compose exec decorators-spring bash -c 'python3 /opt/smoke-test/smoke.py'
+
+test: smoke
