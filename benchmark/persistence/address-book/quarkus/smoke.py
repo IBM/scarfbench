@@ -19,7 +19,7 @@ Checks:
 Environment:
   ADDRESS_BOOK_BASE   Base app URL (default: http://localhost:8080/)
   VERBOSE=1           Verbose logging
-  HEADLESS=1          Run browser in headless mode (default: false)
+  HEADLESS=0          Run browser in headed mode (default: true/headless)
   BROWSER             Browser to use: chrome, firefox, edge (default: chrome)
 
 Exit codes:
@@ -45,7 +45,7 @@ except ImportError:
 
 BASE = os.getenv("ADDRESS_BOOK_BASE", "http://localhost:8080/").rstrip("/")
 VERBOSE = os.getenv("VERBOSE") == "1"
-HEADLESS = os.getenv("HEADLESS") == "1"
+HEADLESS = os.getenv("HEADLESS", "1") == "1"
 BROWSER = os.getenv("BROWSER", "chromium").lower()
 HTTP_TIMEOUT = 12
 PLAYWRIGHT_TIMEOUT = 10000
