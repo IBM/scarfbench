@@ -18,9 +18,6 @@ RUN uv venv /opt/venv \
 ENV PATH="/opt/venv/bin:$PATH"
 RUN playwright install --with-deps chromium
 
-RUN useradd -m -u 1001 quarkus
-
-USER quarkus
 WORKDIR /app
 
 COPY --chown=1001:1001 . .
