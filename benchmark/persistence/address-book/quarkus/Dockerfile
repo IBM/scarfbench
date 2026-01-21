@@ -27,6 +27,4 @@ COPY --chown=1001:1001 . .
 
 RUN chmod +x smoke.py
 
-EXPOSE 8080
-
-CMD ["./mvnw", "clean", "package", "quarkus:run"]
+CMD ["mvn", "clean", "package", "quarkus:run"]

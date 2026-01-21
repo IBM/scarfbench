@@ -1,6 +1,6 @@
 ### Quarkus Justfile
-APP_NAME       := "address-book-quarkus"
-IMAGE_NAME     := "address-book-quarkus:latest"
+APP_NAME       := "order-quarkus"
+IMAGE_NAME     := "order-quarkus:latest"
 SUCCESS_PATTERN := "started in.*Listening on:"
 
 build:

@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jdk
+FROM maven:3.9.12-ibm-semeru-21-noble
 
 USER root
 # install uv
@@ -18,15 +18,10 @@ RUN uv venv /opt/venv \
 ENV PATH="/opt/venv/bin:$PATH"
 RUN playwright install --with-deps chromium
 
-RUN useradd -m -u 1001 spring
-
-USER spring
 WORKDIR /app
 
 COPY --chown=1001:1001 . .
 
 RUN chmod +x smoke.py
 
-EXPOSE 8080
-
-CMD ["./mvnw", "spring-boot:run"]
+CMD ["mvn", "clean", "package", "spring-boot:run"]

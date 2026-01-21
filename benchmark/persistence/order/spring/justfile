@@ -1,7 +1,7 @@
 ### Spring Boot Justfile
-APP_NAME       := "address-book-spring"
-IMAGE_NAME     := "address-book-spring:latest"
-SUCCESS_PATTERN := "Started Application"
+APP_NAME       := "order-spring"
+IMAGE_NAME     := "order-spring:latest"
+SUCCESS_PATTERN := "Started OrderApplication"
 
 build:
     docker build -f Dockerfile -t {{IMAGE_NAME}} .
@@ -49,4 +49,4 @@ test: up
     @docker exec {{APP_NAME}} sh -c 'python3 /app/smoke.py'
 
 local:
-    ./mvnw spring-boot:run
+    ./mvnw clean package spring-boot:run
