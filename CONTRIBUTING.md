@@ -191,7 +191,7 @@ CMD ["mvn", "clean", "package", "<framework-specific-goal>"]
 For applications requiring browser automation and UI testing (reference: [`benchmark/infrastructure/ejb-async`](benchmark/infrastructure/ejb-async)):
 
 ```dockerfile
-FROM eclipse-temurin:17-jdk
+FROM maven:3.9-eclipse-temurin-21
 
 # Run everything as root (needed for Playwright installation)
 USER root
